@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
+import math
 
 # Load your cleaned dataset
 df = pd.read_csv("placement_iit_bhu_refined_csv4.csv")
-
 st.set_page_config(page_title="Placement Insights", layout="wide")
+st.info("💡 This app looks best in **Light Theme**. Please switch from settings (top-right corner).")
 
 # App title
 st.title("🎓 Placement Insights'24 - Company Search")
@@ -57,7 +58,7 @@ else:
 
 # App title
 st.title("🎓 Placement Insights - Advanced Filters")
-import math
+
 
 # ---------------- PROFILE FILTER ----------------
 profile_options = [
