@@ -96,18 +96,37 @@ def lakh_range_to_rupees(tup):
 # ---------------- SALARY FILTER ----------------
 st.subheader("💰 Salary Filter")
 
-salary_columns = {
+col1, col2 = st.columns(2)
+
+with col1:
+    salary_columns = {
     "CTC (B.Tech)": "ctc_btech",
     "Base (B.Tech)": "base_btech",
     "CTC (IDD)": "ctc_idd",
     "Base (IDD)": "base_idd"
 }
 
-selected_salary_col_label = st.selectbox("Select Salary Type", list(salary_columns.keys()))
-selected_salary_col = salary_columns[selected_salary_col_label]
+    selected_salary_col_label = st.selectbox("Select Salary Type", list(salary_columns.keys()))
+    selected_salary_col = salary_columns[selected_salary_col_label]
+    
+    selected_range_label = st.selectbox("Select Salary Range", list(salary_ranges_lakh.keys()), index=0)
+    salary_min_rs, salary_max_rs = lakh_range_to_rupees(salary_ranges_lakh[selected_range_label])
 
-selected_range_label = st.selectbox("Select Salary Range", list(salary_ranges_lakh.keys()), index=0)
-salary_min_rs, salary_max_rs = lakh_range_to_rupees(salary_ranges_lakh[selected_range_label])
+with col2:
+    # New Greater Than or Equal To filter
+    salary_gte_options = {
+        "-- No Minimum --": 0,
+        "≥ 10 Lakh": 10,
+        "≥ 15 Lakh": 15,
+        "≥ 20 Lakh": 20,
+        "≥ 25 Lakh": 25,
+        "≥ 30 Lakh": 30,
+        "≥ 35 Lakh": 35,
+        "≥ 40 Lakh": 40
+    }
+    
+    selected_gte_label = st.selectbox("Salary Greater Than or Equal To", list(salary_gte_options.keys()))
+    salary_gte_value = salary_gte_options[selected_gte_label] * LAKH
 
 # ---------------- CGPA FILTER ----------------
 st.subheader("🎯 CGPA Filter")
@@ -162,6 +181,9 @@ if selected_range_label != "-- All Salaries --":
         (filtered_df[selected_salary_col] >= salary_min_rs) &
         (filtered_df[selected_salary_col] <= salary_max_rs)
     ]
+
+if selected_gte_label != "-- No Minimum --":
+    filtered_df = filtered_df[filtered_df[selected_salary_col] >= salary_gte_value]
 
 # Apply CGPA filter (between min and max)
 filtered_df["cgpa"] = pd.to_numeric(filtered_df["cgpa"], errors="coerce")
